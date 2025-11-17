@@ -1,0 +1,36 @@
+---
+title: "Household Survey Analysis"
+output: 
+  html_document:
+    toc: true
+    toc_float: 
+      collapsed: false
+      smooth_scroll: true
+    toc_depth: 2
+    code_folding: hide
+    theme: flatly
+knit: (function(input, ...) { 
+  rmarkdown::render( 
+    input, 
+    output_file = 'index.html' 
+  ) 
+})
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(lubridate)
+library(knitr)
+library(scales)
+library(httr)
+library(jsonlite)
+library(kableExtra)
+library(sf)
+library(ggspatial)
+library(gridExtra)
+library(grid)
+library(gtable)
+
+```
