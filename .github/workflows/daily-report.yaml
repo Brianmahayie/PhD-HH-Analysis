@@ -47,5 +47,5 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add -A
+          git add -f index.html
           git diff-index --quiet HEAD || (git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M:%S')" && git pull --rebase origin main && git push origin main)
