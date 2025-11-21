@@ -53,13 +53,18 @@ data_list <- content(response, as = "parsed", simplifyDataFrame = TRUE)
 # Convert to dataframe
 kobo_data <- as.data.frame(data_list$results)
 
-# Clean column names
+# Clean column names - but handle uuid columns specially
+uuid_submission <- kobo_data$`_uuid`  # Store the actual submission UUIDs first
+
 names(kobo_data) <- names(kobo_data) %>%
   sub(".*/", "", .) %>%   # remove everything before the last "/"
   sub("^_", "", .)        # remove leading underscore if present
 
 # Remove duplicate columns (keep first occurrence)
 kobo_data <- kobo_data[, !duplicated(names(kobo_data))]
+
+# Replace with the correct uuid column (submission IDs, not form ID)
+kobo_data$uuid <- uuid_submission
 
 # Convert datetime and create date variables
 kobo_data <- kobo_data %>%
@@ -351,6 +356,146 @@ ggplot() +
   theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
         axis.title = element_blank())
+```
+
+# Correction Code
+```{r,eval=T}
+# Abdulai B
+kobo_data[kobo_data$uuid == "62fbfc0b-6ec9-4e50-a282-46b9d0d7ab2f", "training_received"]
+kobo_data[kobo_data$uuid == "6cf7bf89-19ac-4568-8457-e11c905833f1", "sachet_frequency"]
+kobo_data[kobo_data$uuid == "a77617e9-6169-430a-95f7-b6bfbfeefdee", "daily_helpers"] <- 5
+kobo_data[kobo_data$uuid == "a77617e9-6169-430a-95f7-b6bfbfeefdee", "jerrycans_men"] <- 5
+kobo_data[kobo_data$uuid == "a77617e9-6169-430a-95f7-b6bfbfeefdee", "jerrycans_women"] <- 0
+kobo_data[kobo_data$uuid == "a77617e9-6169-430a-95f7-b6bfbfeefdee", "jerrycans_boys"] <- 5
+kobo_data[kobo_data$uuid == "a77617e9-6169-430a-95f7-b6bfbfeefdee", "jerrycans_girls"] <- 0
+kobo_data[kobo_data$uuid == "a77617e9-6169-430a-95f7-b6bfbfeefdee", "jerrycans_hired"] <- 0
+kobo_data[kobo_data$uuid == "a77617e9-6169-430a-95f7-b6bfbfeefdee", "boys_late_school"] <- 0 
+kobo_data[kobo_data$uuid == "a77617e9-6169-430a-95f7-b6bfbfeefdee", "girls_late_school"] <- 0
+
+# Abdulai K
+kobo_data[kobo_data$uuid == "b49c22a0-0a02-4608-a31a-ed7ee63c0d0f", "injuries_water"] <- 0
+kobo_data[kobo_data$uuid == "b49c22a0-0a02-4608-a31a-ed7ee63c0d0f", "standing_water"] <- "Yes"
+
+# Jamiatu 
+kobo_data[kobo_data$uuid == "53edf992-28fd-4acd-8d60-c99389c1da19", "drinking_source_zone"] <- "Argentina"
+kobo_data[kobo_data$uuid == "ddabb3c7-7743-4de2-a6c4-be98540a18b0", "drinking_source_zone"] <- "outside"
+kobo_data[kobo_data$uuid == "3eb4df93-80a4-46da-98fe-c2139f602f12", "drinking_trips"] <- 15
+kobo_data[kobo_data$uuid == "3eb4df93-80a4-46da-98fe-c2139f602f12", "drinking_walk_time"] <- 15
+kobo_data[kobo_data$uuid == "3eb4df93-80a4-46da-98fe-c2139f602f12", "drinking_wait_time"] <- 0
+kobo_data[kobo_data$uuid == "3eb4df93-80a4-46da-98fe-c2139f602f12", "drinking_potable"]
+kobo_data[kobo_data$uuid == "8ee7c171-4538-4510-99b2-6de849b3ffd9", "training_received"] <- "Yes"
+kobo_data[kobo_data$uuid == "8ee7c171-4538-4510-99b2-6de849b3ffd9", "drinking_trips"]
+kobo_data[kobo_data$uuid == "8ee7c171-4538-4510-99b2-6de849b3ffd9", "drinking_walk_time"]
+kobo_data[kobo_data$uuid == "8ee7c171-4538-4510-99b2-6de849b3ffd9", "drinking_wait_time"]
+kobo_data[kobo_data$uuid == "8ee7c171-4538-4510-99b2-6de849b3ffd9", "drinking_potable"]
+
+# Musa
+kobo_data[kobo_data$uuid == "0086a58b-a395-4ee9-a87d-284f219979dc", "sick_water"] <- 0
+kobo_data[kobo_data$uuid == "029226f2-4892-448b-9be7-5ae500d7181e", "sick_water"] <- 0
+kobo_data[kobo_data$uuid == "37856d33-d39c-480a-8c39-9e906726a389", "number"] <- "Musa knows how to contact"
+kobo_data[kobo_data$uuid == "5106cec6-d3ff-4f5f-ad71-650306f8659c", "number"] <- "Musa knows how to contact"
+kobo_data[kobo_data$uuid == "66a5c709-81b1-4b33-99f0-ab26dab8780b", "number"] <- "Musa knows how to contact"
+kobo_data[kobo_data$uuid == "f4eb3120-6c72-4687-81dc-a42794299365", "number"] <- "Musa knows how to contact"
+kobo_data[kobo_data$uuid == "62133311-ceac-47bd-b7f1-0baded6103f1", "stored_amount"]
+kobo_data[kobo_data$uuid == "62133311-ceac-47bd-b7f1-0baded6103f1", "treatment_frequency"]
+kobo_data[kobo_data$uuid == "62133311-ceac-47bd-b7f1-0baded6103f1", "injuries_water"]
+kobo_data[kobo_data$uuid == "62133311-ceac-47bd-b7f1-0baded6103f1", "standing_water"]
+kobo_data[kobo_data$uuid == "62133311-ceac-47bd-b7f1-0baded6103f1", "sick_water"]
+kobo_data[kobo_data$uuid == "68005fd3-7d8e-4539-b65c-27bd6c039b43", "girls_late_school"]
+kobo_data[kobo_data$uuid == "68005fd3-7d8e-4539-b65c-27bd6c039b43", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "83d4d552-d91e-47b9-8a54-5cbd818ccbd5", "drinking_walk_time"]
+kobo_data[kobo_data$uuid == "83d4d552-d91e-47b9-8a54-5cbd818ccbd5", "drinking_potable"]
+kobo_data[kobo_data$uuid == "d23b2954-7441-4e1f-9ba8-87ea5319d728", "drinking_source_type"]
+kobo_data[kobo_data$uuid == "d23b2954-7441-4e1f-9ba8-87ea5319d728", "drinking_trips"]
+kobo_data[kobo_data$uuid == "d23b2954-7441-4e1f-9ba8-87ea5319d728", "drinking_source_zone"]
+kobo_data[kobo_data$uuid == "d23b2954-7441-4e1f-9ba8-87ea5319d728", "drinking_walk_time"]
+kobo_data[kobo_data$uuid == "d23b2954-7441-4e1f-9ba8-87ea5319d728", "drinking_wait_time"]
+kobo_data[kobo_data$uuid == "d23b2954-7441-4e1f-9ba8-87ea5319d728", "drinking_potable"]
+
+
+# Joana
+kobo_data[kobo_data$uuid == "20122b58-9272-4989-869a-1d8aac6bd338", "drinking_potable"]
+kobo_data[kobo_data$uuid == "63e8ccab-b345-4a3a-b449-0c44559da0da	", "drinking_potable"]
+
+# Moses
+kobo_data[kobo_data$uuid == "061bd737-c256-4fe3-a6b3-acd1dc0b1ce2", "domestic_source_zone"]
+#kobo_data[kobo_data$uuid == "061bd737-c256-4fe3-a6b3-acd1dc0b1ce2", "domestic_trips"] <- 7
+#kobo_data[kobo_data$uuid == "061bd737-c256-4fe3-a6b3-acd1dc0b1ce2", "domestic_wait_time"] <- 90
+#kobo_data[kobo_data$uuid == "061bd737-c256-4fe3-a6b3-acd1dc0b1ce2", "domestic_walk_time"] <- 30
+#kobo_data[kobo_data$uuid == "061bd737-c256-4fe3-a6b3-acd1dc0b1ce2", "number"] <- "Moses has a friend who knows her"
+kobo_data[kobo_data$uuid == "1fa4316f-d559-4ba1-a4a3-30332db5cbfe", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "1fa4316f-d559-4ba1-a4a3-30332db5cbfe", "domestic_source_zone"]
+
+
+
+kobo_data[kobo_data$uuid == "2cfa5225-a766-4e56-b651-9d6f9eda52dc", "domestic_source_zone"] <- "Nigeria"
+#kobo_data[kobo_data$uuid == "2cfa5225-a766-4e56-b651-9d6f9eda52dc", "domestic_trips"] <- 7
+#kobo_data[kobo_data$uuid == "2cfa5225-a766-4e56-b651-9d6f9eda52dc", "domestic_wait_time"] <- 90
+#kobo_data[kobo_data$uuid == "2cfa5225-a766-4e56-b651-9d6f9eda52dc", "domestic_walk_time"] <- 30
+kobo_data[kobo_data$uuid == "381f7f3e-b3a5-4a51-a8b1-319664ad5954", "jerrycans_women"] <- 0
+kobo_data[kobo_data$uuid == "381f7f3e-b3a5-4a51-a8b1-319664ad5954", "drinking_wait_time"] <- 5
+kobo_data[kobo_data$uuid == "381f7f3e-b3a5-4a51-a8b1-319664ad5954", "domestic_source_zone"]
+#kobo_data[kobo_data$uuid == "381f7f3e-b3a5-4a51-a8b1-319664ad5954", "domestic_trips"] <- 4
+#kobo_data[kobo_data$uuid == "381f7f3e-b3a5-4a51-a8b1-319664ad5954", "domestic_wait_time"] <- 60
+#kobo_data[kobo_data$uuid == "381f7f3e-b3a5-4a51-a8b1-319664ad5954", "domestic_walk_time"] <- 25
+kobo_data[kobo_data$uuid == "42efae1a-cd77-49ca-85e6-6583fb8896b4", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "42efae1a-cd77-49ca-85e6-6583fb8896b4", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "48be598f-b6e9-4e35-85ba-d672c3e45331", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "48be598f-b6e9-4e35-85ba-d672c3e45331", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "4c03b1c9-1feb-4ec4-a5c2-39553a526d10", "domestic_source_zone"]
+#kobo_data[kobo_data$uuid == "4c03b1c9-1feb-4ec4-a5c2-39553a526d10", "domestic_trips"] <- 3
+#kobo_data[kobo_data$uuid == "4c03b1c9-1feb-4ec4-a5c2-39553a526d10", "domestic_wait_time"] <- 35
+#kobo_data[kobo_data$uuid == "4c03b1c9-1feb-4ec4-a5c2-39553a526d10", "domestic_walk_time"] <- 20
+kobo_data[kobo_data$uuid == "5df59f00-af3a-4881-a0ac-e2ff0a8f90b5", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "5df59f00-af3a-4881-a0ac-e2ff0a8f90b5", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "5fbfea3b-e19b-442c-bc8b-9204b213d06a", "domestic_source_zone"]
+#kobo_data[kobo_data$uuid == "5fbfea3b-e19b-442c-bc8b-9204b213d06a", "domestic_trips"] <- 7
+#kobo_data[kobo_data$uuid == "5fbfea3b-e19b-442c-bc8b-9204b213d06a", "domestic_wait_time"]
+#kobo_data[kobo_data$uuid == "5fbfea3b-e19b-442c-bc8b-9204b213d06a", "domestic_walk_time"]
+kobo_data[kobo_data$uuid == "74bf1689-bbd5-4312-b14e-ecb835f1c018", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "74bf1689-bbd5-4312-b14e-ecb835f1c018", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "81fca416-a986-4fe3-998c-84927148b979", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "81fca416-a986-4fe3-998c-84927148b979", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "82730320-0b13-4d95-99d8-a8b1cab20615", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "82730320-0b13-4d95-99d8-a8b1cab20615", "domestic_source_type"]
+
+kobo_data[kobo_data$uuid == "8293d887-55f6-4c5e-a970-7111ab1e7e59", "gps_location"]
+kobo_data[kobo_data$uuid == "8293d887-55f6-4c5e-a970-7111ab1e7e59", "domestic_source_zone"]
+#kobo_data[kobo_data$uuid == "8293d887-55f6-4c5e-a970-7111ab1e7e59", "domestic_trips"] <- 7
+#kobo_data[kobo_data$uuid == "8293d887-55f6-4c5e-a970-7111ab1e7e59", "domestic_wait_time"] <- 120
+#kobo_data[kobo_data$uuid == "8293d887-55f6-4c5e-a970-7111ab1e7e59", "domestic_walk_time"] <- 30
+#kobo_data[kobo_data$uuid == "8293d887-55f6-4c5e-a970-7111ab1e7e59", "men_danger_people"] <- 3
+kobo_data <- kobo_data[kobo_data$uuid != "9cb5a1b7-58b1-40e2-aad3-6aae6de2c423", ]
+kobo_data[kobo_data$uuid == "8af210bb-e2a3-4f0b-8a18-353a1702c891	", "gps_location"]
+kobo_data[kobo_data$uuid == "8af210bb-e2a3-4f0b-8a18-353a1702c891	", "domestic_source_zone"]
+#kobo_data[kobo_data$uuid == "8af210bb-e2a3-4f0b-8a18-353a1702c891	", "domestic_trips"] <- 7
+#kobo_data[kobo_data$uuid == "8af210bb-e2a3-4f0b-8a18-353a1702c891	", "domestic_wait_time"] <- 60
+#kobo_data[kobo_data$uuid == "8af210bb-e2a3-4f0b-8a18-353a1702c891	", "domestic_walk_time"] <- 35
+kobo_data[kobo_data$uuid == "ce8d3269-42c3-4625-a023-ed95dda75df5", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "ce8d3269-42c3-4625-a023-ed95dda75df5", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "df83da6a-fa01-450f-864c-ae5325446aef", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "df83da6a-fa01-450f-864c-ae5325446aef", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "ecd142fc-9758-45a1-8592-b535dec8340a", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "ecd142fc-9758-45a1-8592-b535dec8340a", "domestic_source_type"]
+kobo_data[kobo_data$uuid == "fc735327-7e52-4fbb-8075-396dba0bf9a5", "community"] <- "Dworzark"
+kobo_data[kobo_data$uuid == "fc735327-7e52-4fbb-8075-396dba0bf9a5", "domestic_source_zone"]
+kobo_data[kobo_data$uuid == "fc735327-7e52-4fbb-8075-396dba0bf9a5", "drinking_source_zone"]
+kobo_data[kobo_data$uuid == "fc735327-7e52-4fbb-8075-396dba0bf9a5", "hwise_no_water_score"]
+
+
+# Joseph
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "number"]
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "domestic_source_zone"] <- NA
+#kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "domestic_trips"] <- 15
+#kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "domestic_wait_time"] <- 15
+#kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "domestic_walk_time"] <- 7
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "men_danger_environment"] <- 0
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "men_danger_people"] <- 0
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "sachet_frequency"] <- "Always"
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "women_bullying_others"] <- 0
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "women_bullying_owner"] <- 0
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "women_danger_environment"] <- 0
+kobo_data[kobo_data$uuid == "dc1bbb7a-a2a3-424c-ad52-5f0b6b955bbc", "women_danger_people"] <- 0
 ```
 
 # Demographics
@@ -1106,6 +1251,7 @@ treatment_summary <- treatment_counts %>%
 
 # Display table
 treatment_summary %>%
+  #select(-`NA`) %>%
   kable(col.names = c("Treatment Type", "Cockle Bay", "Dworzark", "Portee Rokupa"),
         align = c("l", "c", "c", "c")) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
@@ -1146,7 +1292,8 @@ disease_summary <- disease_counts %>%
     count_pct = paste0(count, " (", round(pct, 1), "%)")
   ) %>%
   select(community, water_disease_list, count_pct) %>%
-  pivot_wider(names_from = community, values_from = count_pct, values_fill = "0 (0.0%)")
+  pivot_wider(names_from = community, values_from = count_pct, values_fill = "0 (0.0%)") #%>%
+  #select(-`NA`)
 
 # Display table
 disease_summary %>%
@@ -1155,3 +1302,60 @@ disease_summary %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                 full_width = FALSE)
 ```
+
+# Missing Data Table
+
+```{r}
+# Define exclusions by UUID and variable
+household_exclusions <- tribble(
+  ~uuid, ~variable,
+  "example-uuid-1", "variable_name",
+  "example-uuid-2", "variable_name"
+)
+
+# Calculate missing percentage for all variables
+missing_summary <- kobo_data %>%
+  summarise(across(everything(), ~sum(is.na(.) | . == "") / n() * 100)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "variable",
+               values_to = "percent_missing") %>%
+  arrange(percent_missing)
+
+# Create list of variables with less than 10% missing, excluding those ending in "_score"
+no_skip_vars <- missing_summary %>%
+  filter(percent_missing < 10) %>%
+  filter(!str_ends(variable, "_score")) %>%
+  pull(variable)
+
+# Select no-skip variables plus identifying columns
+missing_data <- kobo_data %>%
+  select(surveyor_name, uuid, name, date_label, all_of(no_skip_vars)) %>%
+  # Create indicators for missing values (NA or blank)
+  mutate(across(all_of(no_skip_vars), 
+                ~if_else(is.na(.) | . == "", "Missing", "Present"),
+                .names = "{.col}_status")) %>%
+  # Keep only the status columns plus identifying columns
+  select(surveyor_name, uuid, name, date_label, ends_with("_status")) %>%
+  # Pivot longer to get one row per variable per observation
+  pivot_longer(cols = ends_with("_status"),
+               names_to = "variable",
+               values_to = "status") %>%
+  # Clean up variable names
+  mutate(variable = str_remove(variable, "_status")) %>%
+  # Filter to only missing values
+  filter(status == "Missing") %>%
+  # Remove status column
+  select(-status) %>%
+  # Apply exclusions - remove rows that match uuid + variable combinations
+  anti_join(household_exclusions, by = c("uuid", "variable")) %>%
+  # Group by surveyor, uuid, name, date_label
+  group_by(surveyor_name, uuid, name, date_label) %>%
+  summarise(missing_variables = paste(variable, collapse = ", "), .groups = "drop") %>%
+  arrange(surveyor_name, date_label)
+
+# Create the table
+missing_data %>%
+  kable(col.names = c("Surveyor", "UUID", "Name", "Date", "Missing Variables")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
