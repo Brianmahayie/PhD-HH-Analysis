@@ -1,10 +1,8 @@
 name: Render HH Analysis
-
 on:
   schedule:
     - cron: '0 20 * * *'  # 8pm GMT (Sierra Leone time)
   workflow_dispatch:
-
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -50,5 +48,4 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add -A
-          git diff-index --quiet HEAD || git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M:%S')"
-          git push
+          git diff-index --quiet HEAD || (git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M:%S')" && git pull --rebase origin main && git push origin main)
